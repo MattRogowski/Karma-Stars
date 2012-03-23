@@ -9,7 +9,7 @@ Files: 4
 Templates added: 1
 Template changes: 2
 Database tables added: 1
-Database columns added: 1
+Database columns added: 0
 
 Information:
 This plugin will show stars, or 'karma', based on post count.
