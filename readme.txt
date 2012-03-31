@@ -5,9 +5,9 @@ Author: MattRogowski
 Authorsite: http://mattrogowski.co.uk/plugins/
 Version: 0.1
 Compatibility: 1.6.x
-Files: 4
-Templates added: 1
-Template changes: 2
+Files: 4 (plus 18 images)
+Templates added: 4
+Template changes: 4
 Database tables added: 1
 Database columns added: 0
 
@@ -17,12 +17,13 @@ This plugin will show stars, or 'karma', based on post count.
 To Install:
 Upload ./inc/plugins/karmastars.php to ./inc/plugins/
 Upload ./inc/languages/karmastars.lang.php to ./inc/languages/english/
+Upload ./images/karmastars/ and its contents to ./images/
 Upload ./admin/modules/user/karmastars.php to ./admin/modules/user/
 Upload ./inc/languages/english/admin/user_karmastars.lang.php to ./inc/languages/english/admin/
 Go to ACP > Plugins > Activate
 
 Change Log:
-01/01/70 - v0.1 -> Initial 'beta' release.
+31/03/12 - v0.1 -> Initial 'beta' release.
 
 Copyright 2012 Matthew Rogowski
 
