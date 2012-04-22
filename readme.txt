@@ -3,7 +3,7 @@ Description: Earn 'karma' and collect stars for posting.
 Website: http://mattrogowski.co.uk/plugins/
 Author: MattRogowski
 Authorsite: http://mattrogowski.co.uk/plugins/
-Version: 0.1
+Version: 1.0
 Compatibility: 1.6.x
 Files: 4 (plus 18 images)
 Templates added: 4
@@ -24,6 +24,7 @@ Go to ACP > Plugins > Activate
 
 Change Log:
 31/03/12 - v0.1 -> Initial 'beta' release.
+22/04/12 - v0.1 -> v1.0 -> Added ability to change how many Karma levels there are. To upgrade, reupload ./admin/modules/user/karmastars.php and ./inc/languages/english/admin/user_karmastars.lang.php
 
 Copyright 2012 Matthew Rogowski
 
