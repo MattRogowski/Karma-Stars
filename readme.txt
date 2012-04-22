@@ -24,7 +24,7 @@ Go to ACP > Plugins > Activate
 
 Change Log:
 31/03/12 - v0.1 -> Initial 'beta' release.
-22/04/12 - v0.1 -> v1.0 -> Added ability to change how many Karma levels there are. To upgrade, reupload ./admin/modules/user/karmastars.php and ./inc/languages/english/admin/user_karmastars.lang.php
+22/04/12 - v0.1 -> v1.0 -> Added ability to change how many Karma levels there are. To upgrade, reupload ./inc/plugins/karmastars.php, ./admin/modules/user/karmastars.php and ./inc/languages/english/admin/user_karmastars.lang.php
 
 Copyright 2012 Matthew Rogowski
 
