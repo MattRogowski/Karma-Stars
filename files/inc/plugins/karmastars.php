@@ -1,8 +1,8 @@
 <?php
 /**
- * Karma Stars 1.0
+ * Karma Stars 1.1
 
- * Copyright 2011 Matthew Rogowski
+ * Copyright 2014 Matthew Rogowski
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,11 +37,11 @@ function karmastars_info()
 	return array(
 		"name" => "Karma Stars",
 		"description" => "Earn 'karma' and collect stars for posting.",
-		"website" => "http://mattrogowski.co.uk/mybb/",
-		"author" => "MattRogowski",
-		"authorsite" => "http://mattrogowski.co.uk/mybb/",
-		"version" => "1.0",
-		"compatibility" => "16*",
+		"website" => "https://github.com/MattRogowski/Karma-Stars",
+		"author" => "Matt Rogowski",
+		"authorsite" => "http://mattrogowski.co.uk",
+		"version" => "1.1",
+		"compatibility" => "16*,18*",
 		"guid" => "72b9e7d4ba1c87d94bdfab7d14a01f5d"
 	);
 }
@@ -188,7 +188,7 @@ function karmastars_uninstall()
 
 function karmastars_activate()
 {
-	global $db;
+	global $mybb, $db;
 	
 	karmastars_deactivate();
 	
@@ -197,13 +197,14 @@ function karmastars_activate()
 	find_replace_templatesets("postbit", "#".preg_quote('{$post[\'onlinestatus\']}')."#i", '{$post[\'karmastar\']}{$post[\'onlinestatus\']}');
 	find_replace_templatesets("postbit_classic", "#".preg_quote('{$post[\'onlinestatus\']}')."#i", '{$post[\'karmastar\']}{$post[\'onlinestatus\']}');
 	find_replace_templatesets("member_profile", "#".preg_quote('<span class="largetext"><strong>{$formattedname}</strong></span><br />')."#i", '<span class="largetext"><strong>{$formattedname}</strong></span>{$memprofile[\'karmastar\']}<br />');
-	find_replace_templatesets("footer", "#".preg_quote('{$lang->bottomlinks_syndication}</a>')."#i", '{$lang->bottomlinks_syndication}</a> | <a href="{$mybb->settings[\'bburl\']}/misc.php?action=karmastars">{$lang->karmastars}</a>');
-	
-	$template_group = array(
-		"prefix" => "karmastars",
-		"title" => "<lang:karmastars>"
-	);
-	$db->insert_query("templategroups", $template_group);
+	if(substr($mybb->version, 0, 3) == '1.6')
+	{
+		find_replace_templatesets("footer", "#".preg_quote('{$lang->bottomlinks_syndication}</a>')."#i", '{$lang->bottomlinks_syndication}</a> | <a href="{$mybb->settings[\'bburl\']}/misc.php?action=karmastars">{$lang->karmastars}</a>');
+	}
+	elseif(substr($mybb->version, 0, 3) == '1.8')
+	{
+		find_replace_templatesets("footer", "#".preg_quote('{$lang->bottomlinks_syndication}</a></li>')."#i", '{$lang->bottomlinks_syndication}</a></li>'."\n\t\t\t\t".'<li><a href="{$mybb->settings[\'bburl\']}/misc.php?action=karmastars">{$lang->karmastars}</a></li>');
+	}
 	
 	$templates = array();
 	$templates[] = array(
@@ -254,8 +255,7 @@ function karmastars_activate()
 	<td class=\"{\$trow}\">
 		{\$karmastar['karmastar_name']}
 	</td>
-</tr>
-{\$karmastars_list_row_percentage}"
+</tr>"
 	);
 	$templates[] = array(
 		"title" => "karmastars_list_row_percentage",
@@ -275,7 +275,7 @@ function karmastars_activate()
 			"title" => $db->escape_string($template['title']),
 			"template" => $db->escape_string($template['template']),
 			"sid" => "-1",
-			"version" => "1600",
+			"version" => "1800",
 			"status" => "",
 			"dateline" => TIME_NOW
 		);
@@ -286,16 +286,22 @@ function karmastars_activate()
 
 function karmastars_deactivate()
 {
-	global $db;
+	global $mybb, $db;
 	
 	require_once MYBB_ROOT . 'inc/adminfunctions_templates.php';
 	
 	find_replace_templatesets("postbit", "#".preg_quote('{$post[\'karmastar\']}')."#i", '', 0);
 	find_replace_templatesets("postbit_classic", "#".preg_quote('{$post[\'karmastar\']}')."#i", '', 0);
 	find_replace_templatesets("member_profile", "#".preg_quote('{$memprofile[\'karmastar\']}')."#i", '', 0);
-	find_replace_templatesets("footer", "#".preg_quote(' | <a href="{$mybb->settings[\'bburl\']}/misc.php?action=karmastars">{$lang->karmastars}</a>')."#i", '', 0);
+	if(substr($mybb->version, 0, 3) == '1.6')
+	{
+		find_replace_templatesets("footer", "#".preg_quote(' | <a href="{$mybb->settings[\'bburl\']}/misc.php?action=karmastars">{$lang->karmastars}</a>')."#i", '', 0);
+	}
+	elseif(substr($mybb->version, 0, 3) == '1.8')
+	{
+		find_replace_templatesets("footer", "#".preg_quote("\n\t\t\t\t".'<li><a href="{$mybb->settings[\'bburl\']}/misc.php?action=karmastars">{$lang->karmastars}</a></li>')."#i", '', 0);
+	}
 	
-	$db->delete_query("templategroups", "prefix = 'karmastars'");
 	$db->delete_query("templates", "title IN ('karmastars_postbit','karmastars_list','karmastars_list_row','karmastars_list_row_percentage')");
 }
 
@@ -365,40 +371,57 @@ function karmastars_list()
 		$lang->load('karmastars');
 		
 		$karmastars = $cache->read('karmastars');
-		$next_karmastar_done = false;
-		$do_next_karmastar = false;
-		foreach($karmastars as $karmastar)
+		foreach($karmastars as $i => $karmastar)
 		{
 			$trow = alt_trow();
 			$selected = '';
+			$next_karma = false;
+			$earned_karma = false;
 			if($mybb->user['uid'])
 			{
 				$user_karmastar = karmastars_get_karma($mybb->user['postnum']);
-				$next_karmastar = 0;
-				$karmastars_list_row_percentage = '';
-				if($user_karmastar['karmastar_id'] == $karmastar['karmastar_id'])
+				if($user_karmastar)
 				{
-					$selected = ' class="trow_selected"';
-					$next_karmastar = $user_karmastar['karmastar_id'];
-					$do_next_karmastar = true;
+					if($user_karmastar['karmastar_id'] == $karmastar['karmastar_id'])
+					{
+						$selected = ' class="trow_selected"';
+						$earned_karma = true;
+						if(array_key_exists(($i + 1), $karmastars))
+						{
+							$next_karma = $karmastars[($i + 1)];
+						}
+					}
 				}
-				if(!$next_karmastar_done && !$user_karmastar)
+				elseif($i == 0)
 				{
-					$do_next_karmastar = true;
-					$karmastar['karmastar_posts'] = 0;
-				}
-				if(!$next_karmastar_done && $do_next_karmastar && (($next_karmastar && array_key_exists($next_karmastar, $karmastars)) || !$next_karmastar))
-				{
-					$posts_difference = $karmastars[$next_karmastar]['karmastar_posts'] - $karmastar['karmastar_posts'];
-					$posts_done = $mybb->user['postnum'] - $karmastar['karmastar_posts'];
-					$posts_left = $karmastars[$next_karmastar]['karmastar_posts'] - $mybb->user['postnum'];
-					$percentage_done = round(($posts_done / $posts_difference) * 100);
-					$next_karmastar_done = true;
-					$percentage_left = $lang->sprintf($lang->karmastars_next_level, $posts_left);
-					eval("\$karmastars_list_row_percentage .= \"".$templates->get('karmastars_list_row_percentage')."\";");
+					$next_karma = $karmastar;
 				}
 			}
-			eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row')."\";");
+			if($earned_karma)
+			{
+				eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row')."\";");
+			}
+			if($next_karma)
+			{
+				$posts_left = $next_karma['karmastar_posts'] - $mybb->user['postnum'];
+				if(!$earned_karma)
+				{
+					$posts_difference = $next_karma['karmastar_posts'];
+					$posts_done = $mybb->user['postnum'];
+				}
+				else
+				{
+					$posts_difference = $next_karma['karmastar_posts'] - $karmastar['karmastar_posts'];
+					$posts_done = $mybb->user['postnum'] - $karmastar['karmastar_posts'];
+				}
+				$percentage_done = round(($posts_done / $posts_difference) * 100);
+				$percentage_left = $lang->sprintf($lang->karmastars_next_level, $posts_left);
+				eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row_percentage')."\";");
+			}
+			if(!$earned_karma)
+			{
+				eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row')."\";");
+			}
 		}
 		
 		add_breadcrumb($lang->karmastars);
