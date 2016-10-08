@@ -1,8 +1,8 @@
 <?php
 /**
- * Karma Stars 1.1 - Admin File
+ * Karma Stars 1.1.0 - Admin File
 
- * Copyright 2014 Matthew Rogowski
+ * Copyright 2016 Matthew Rogowski
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

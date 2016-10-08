@@ -1,8 +1,8 @@
 <?php
 /**
- * Karma Stars 1.1
+ * Karma Stars 1.1.0
 
- * Copyright 2014 Matthew Rogowski
+ * Copyright 2016 Matthew Rogowski
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,10 @@ function karmastars_info()
 		"description" => "Earn 'karma' and collect stars for posting.",
 		"website" => "https://github.com/MattRogowski/Karma-Stars",
 		"author" => "Matt Rogowski",
-		"authorsite" => "http://mattrogowski.co.uk",
-		"version" => "1.1",
+		"authorsite" => "https://matt.rogow.ski",
+		"version" => "1.1.0",
 		"compatibility" => "16*,18*",
-		"guid" => "72b9e7d4ba1c87d94bdfab7d14a01f5d"
+		"codename" => "karmastars"
 	);
 }
 
