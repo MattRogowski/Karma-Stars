@@ -3,7 +3,7 @@ Description: Earn 'karma' and collect stars for posting.
 Website: https://github.com/MattRogowski/Karma-Stars
 Author: Matt Rogowski
 Authorsite: https://matt.rogow.ski
-Version: 1.1.0
+Version: 1.1.1
 Compatibility: 1.6.x, 1.8.x
 Files: 4 (plus 18 images)
 Templates added: 4
@@ -26,6 +26,7 @@ Change Log:
 31/03/12 - v0.1 -> Initial 'beta' release.
 22/04/12 - v0.1 -> v1.0 -> Added ability to change how many Karma levels there are. To upgrade, reupload ./inc/plugins/karmastars.php, ./admin/modules/user/karmastars.php and ./inc/languages/english/admin/user_karmastars.lang.php
 25/08/14 - v1.0 -> v1.1 -> MyBB 1.8 compatible. Fixed bug with 'next karma' on list view. To upgrade, deactivate, reupload ./inc/plugins/karmastars.php, activate.
+28/12/16 - v1.1 -> v1.1.1 -> Added missing language string for admin permission. To upgrade, reupload ./inc/plugins/karmastars.php and ./inc/languages/english/admin/user_karmastars.lang.php
 
 Copyright 2016 Matthew Rogowski
 

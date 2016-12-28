@@ -1,6 +1,6 @@
 <?php
 /**
- * Karma Stars 1.1.0
+ * Karma Stars 1.1.1
 
  * Copyright 2016 Matthew Rogowski
 
@@ -40,7 +40,7 @@ function karmastars_info()
 		"website" => "https://github.com/MattRogowski/Karma-Stars",
 		"author" => "Matt Rogowski",
 		"authorsite" => "https://matt.rogow.ski",
-		"version" => "1.1.0",
+		"version" => "1.1.1",
 		"compatibility" => "16*,18*",
 		"codename" => "karmastars"
 	);
@@ -49,9 +49,9 @@ function karmastars_info()
 function karmastars_install()
 {
 	global $db;
-	
+
 	karmastars_uninstall();
-	
+
 	if(!$db->table_exists('karmastars'))
 	{
 		$db->write_query("
@@ -170,30 +170,30 @@ function karmastars_install()
 function karmastars_is_installed()
 {
 	global $db;
-	
+
 	return $db->table_exists('karmastars');
 }
 
 function karmastars_uninstall()
 {
 	global $db;
-	
+
 	if($db->table_exists('karmastars'))
 	{
 		$db->drop_table('karmastars');
 	}
-	
+
 	$db->delete_query('datacache', 'title = \'karmastars\'');
 }
 
 function karmastars_activate()
 {
 	global $mybb, $db;
-	
+
 	karmastars_deactivate();
-	
+
 	require_once MYBB_ROOT . 'inc/adminfunctions_templates.php';
-	
+
 	find_replace_templatesets("postbit", "#".preg_quote('{$post[\'onlinestatus\']}')."#i", '{$post[\'karmastar\']}{$post[\'onlinestatus\']}');
 	find_replace_templatesets("postbit_classic", "#".preg_quote('{$post[\'onlinestatus\']}')."#i", '{$post[\'karmastar\']}{$post[\'onlinestatus\']}');
 	find_replace_templatesets("member_profile", "#".preg_quote('<span class="largetext"><strong>{$formattedname}</strong></span><br />')."#i", '<span class="largetext"><strong>{$formattedname}</strong></span>{$memprofile[\'karmastar\']}<br />');
@@ -205,7 +205,7 @@ function karmastars_activate()
 	{
 		find_replace_templatesets("footer", "#".preg_quote('{$lang->bottomlinks_syndication}</a></li>')."#i", '{$lang->bottomlinks_syndication}</a></li>'."\n\t\t\t\t".'<li><a href="{$mybb->settings[\'bburl\']}/misc.php?action=karmastars">{$lang->karmastars}</a></li>');
 	}
-	
+
 	$templates = array();
 	$templates[] = array(
 		"title" => "karmastars_postbit",
@@ -268,7 +268,7 @@ function karmastars_activate()
 	</td>
 </tr>"
 	);
-	
+
 	foreach($templates as $template)
 	{
 		$insert = array(
@@ -279,7 +279,7 @@ function karmastars_activate()
 			"status" => "",
 			"dateline" => TIME_NOW
 		);
-		
+
 		$db->insert_query("templates", $insert);
 	}
 }
@@ -287,9 +287,9 @@ function karmastars_activate()
 function karmastars_deactivate()
 {
 	global $mybb, $db;
-	
+
 	require_once MYBB_ROOT . 'inc/adminfunctions_templates.php';
-	
+
 	find_replace_templatesets("postbit", "#".preg_quote('{$post[\'karmastar\']}')."#i", '', 0);
 	find_replace_templatesets("postbit_classic", "#".preg_quote('{$post[\'karmastar\']}')."#i", '', 0);
 	find_replace_templatesets("member_profile", "#".preg_quote('{$memprofile[\'karmastar\']}')."#i", '', 0);
@@ -301,14 +301,14 @@ function karmastars_deactivate()
 	{
 		find_replace_templatesets("footer", "#".preg_quote("\n\t\t\t\t".'<li><a href="{$mybb->settings[\'bburl\']}/misc.php?action=karmastars">{$lang->karmastars}</a></li>')."#i", '', 0);
 	}
-	
+
 	$db->delete_query("templates", "title IN ('karmastars_postbit','karmastars_list','karmastars_list_row','karmastars_list_row_percentage')");
 }
 
 function karmastars_cache()
 {
 	global $db, $cache;
-	
+
 	$query = $db->simple_select('karmastars', '*', '', array('order_by' => 'karmastar_posts', 'order_dir' => 'ASC'));
 	$karmastars = array();
 	while($karmastar = $db->fetch_array($query))
@@ -321,12 +321,12 @@ function karmastars_cache()
 function karmastars_get_karma($posts)
 {
 	global $mybb, $cache;
-	
+
 	$posts = intval(str_replace($mybb->settings['thousandssep'], '', $posts));
-	
+
 	$karmastars = $cache->read('karmastars');
 	$karmastars = array_reverse($karmastars);
-	
+
 	foreach($karmastars as $karmastar)
 	{
 		if($posts >= $karmastar['karmastar_posts'])
@@ -334,14 +334,14 @@ function karmastars_get_karma($posts)
 			return $karmastar;
 		}
 	}
-	
+
 	return false;
 }
 
 function karmastars_postbit(&$post)
 {
 	global $mybb, $templates;
-	
+
 	$post['karmastar'] = '';
 	$karmastar = karmastars_get_karma($post['postnum']);
 	if($karmastar)
@@ -353,7 +353,7 @@ function karmastars_postbit(&$post)
 function karmastars_profile()
 {
 	global $mybb, $templates, $memprofile;
-	
+
 	$memprofile['karmastar'] = '';
 	$karmastar = karmastars_get_karma($memprofile['postnum']);
 	if($karmastar)
@@ -365,11 +365,11 @@ function karmastars_profile()
 function karmastars_list()
 {
 	global $mybb, $cache, $lang, $templates, $theme, $header, $headerinclude, $footer, $karmastars_list;
-	
+
 	if($mybb->input['action'] == 'karmastars')
 	{
 		$lang->load('karmastars');
-		
+
 		$karmastars = $cache->read('karmastars');
 		foreach($karmastars as $i => $karmastar)
 		{
@@ -423,7 +423,7 @@ function karmastars_list()
 				eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row')."\";");
 			}
 		}
-		
+
 		add_breadcrumb($lang->karmastars);
 		eval("\$karmastars_page = \"".$templates->get('karmastars_list')."\";");
 		output_page($karmastars_page);
@@ -433,14 +433,14 @@ function karmastars_list()
 function karmastars_footer()
 {
 	global $lang;
-	
+
 	$lang->load('karmastars');
 }
 
 function karmastars_friendly_wol(&$user_activity)
 {
 	global $user;
-	
+
 	if(my_strpos($user['location'], "misc.php?action=karmastars") !== false)
 	{
 		$user_activity['activity'] = "misc_karmastars";
@@ -450,9 +450,9 @@ function karmastars_friendly_wol(&$user_activity)
 function karmastars_build_wol(&$plugin_array)
 {
 	global $lang;
-	
+
 	$lang->load("karmastars");
-	
+
 	if($plugin_array['user_activity']['activity'] == "misc_karmastars")
 	{
 		$plugin_array['location_name'] = $lang->karmastars_wol;
@@ -462,11 +462,11 @@ function karmastars_build_wol(&$plugin_array)
 function karmastars_admin_user_menu($sub_menu)
 {
 	global $lang;
-	
+
 	$lang->load("user_karmastars");
-	
+
 	$sub_menu[] = array("id" => "karmastars", "title" => $lang->karmastars, "link" => "index.php?module=user-karmastars");
-	
+
 	return $sub_menu;
 }
 
@@ -476,18 +476,18 @@ function karmastars_admin_user_action_handler($actions)
 		"active" => "karmastars",
 		"file" => "karmastars.php"
 	);
-	
+
 	return $actions;
 }
 
 function karmastars_admin_user_permissions($admin_permissions)
 {
 	global $lang;
-	
+
 	$lang->load("user_karmastars");
-	
+
 	$admin_permissions['karmastars'] = $lang->can_manage_karmastars;
-	
+
 	return $admin_permissions;
 }
 

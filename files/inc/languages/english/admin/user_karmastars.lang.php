@@ -1,6 +1,6 @@
 <?php
 /**
- * Karma Stars 1.1.0 - Admin Language File
+ * Karma Stars 1.1.1 - Admin Language File
 
  * Copyright 2016 Matthew Rogowski
 
@@ -31,4 +31,5 @@ $l['karmastars_update_error_image_missing'] = 'Image doesn\'t exist';
 $l['karmastars_rows'] = 'Number of Karma Star Levels: ';
 $l['karmastars_submit'] = 'Submit';
 $l['karmastars_update'] = 'Update';
+$l['can_manage_karmastars'] = "Can manage Karma Stars?";
 ?>
