@@ -412,7 +412,7 @@ function karmastars_list()
 
 		if($view_top)
 		{
-			$query = $db->simple_select('users', 'uid, username, usergroup, displaygroup, postnum', '', array('order_by' => 'postnum', 'order_dir' => 'desc', 'limit' => 20));
+			$query = $db->simple_select('users', 'uid, username, usergroup, displaygroup, postnum', 'postnum > 0', array('order_by' => 'postnum', 'order_dir' => 'desc', 'limit' => 20));
 			$users = array();
 			while($user = $db->fetch_array($query))
 			{
