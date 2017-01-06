@@ -24,5 +24,7 @@ $l['karmastars_posts'] = 'Posts';
 $l['karmastars_name'] = 'Name';
 $l['karmastars_next_level'] = 'Posts until next level: {1}';
 $l['karmastars_view_own'] = 'View own Karma Stars';
+$l['karmastars_view_top'] = 'View top posters';
+$l['karmastars_hide_top'] = 'Hide top posters';
 $l['karmastars_wol'] = 'Viewing <a href="misc.php?action=karmastars">Karma Stars List</a>';
 ?>

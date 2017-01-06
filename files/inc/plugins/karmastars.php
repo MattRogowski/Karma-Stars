@@ -247,6 +247,11 @@ function karmastars_activate()
 		</td>
 	</tr>
 	{\$karmastars_list}
+	<tr>
+		<td class=\"tfoot\" colspan=\"3\">
+			<div class=\"float_right\"><a href=\"{\$view_top_link}\">{\$view_top_text}</a></div>
+		</td>
+	</tr>
 </table>
 {\$footer}
 </body>
@@ -262,7 +267,7 @@ function karmastars_activate()
 		{\$karmastar['karmastar_posts']}
 	</td>
 	<td class=\"{\$trow}\">
-		{\$karmastar['karmastar_name']}
+		{\$karmastar['karmastar_name']}{\$karma_top_users}
 	</td>
 </tr>"
 	);
@@ -373,15 +378,21 @@ function karmastars_profile()
 
 function karmastars_list()
 {
-	global $mybb, $cache, $lang, $templates, $theme, $header, $headerinclude, $footer, $karmastars_list;
+	global $mybb, $db, $cache, $lang, $templates, $theme, $header, $headerinclude, $footer, $karmastars_list;
 
 	if($mybb->input['action'] == 'karmastars')
 	{
 		$lang->load('karmastars');
 
+		$view_top = false;
+		if($mybb->input['viewtop'] == 1)
+		{
+			$view_top = true;
+		}
+
 		$uid = 0;
 		$view_own = '';
-		if($mybb->input['uid'])
+		if($mybb->input['uid'] && !$view_top)
 		{
 			$user = get_user($mybb->input['uid']);
 			if($user && $user['uid'] != $mybb->user['uid'])
@@ -399,13 +410,24 @@ function karmastars_list()
 			$table_title = $lang->karmastars;
 		}
 
+		if($view_top)
+		{
+			$query = $db->simple_select('users', 'uid, username, usergroup, displaygroup, postnum', '', array('order_by' => 'postnum', 'order_dir' => 'desc', 'limit' => 20));
+			$users = array();
+			while($user = $db->fetch_array($query))
+			{
+				$users[] = $user;
+			}
+		}
+
 		$karmastars = $cache->read('karmastars');
 		foreach($karmastars as $i => $karmastar)
 		{
 			$trow = alt_trow();
 			$selected = '';
-			$next_karma = false;
-			$earned_karma = false;
+			$next_user_karma = $next_karma = null;
+			$earned_karma = $last_karma = false;
+			$karma_top_users = '';
 			if($uid)
 			{
 				$user_karmastar = karmastars_get_karma($postnum);
@@ -417,30 +439,53 @@ function karmastars_list()
 						$earned_karma = true;
 						if(array_key_exists(($i + 1), $karmastars))
 						{
-							$next_karma = $karmastars[($i + 1)];
+							$next_user_karma = $karmastars[($i + 1)];
 						}
 					}
 				}
 				elseif($i == 0)
 				{
-					$next_karma = $karmastar;
+					$next_user_karma = $karmastar;
 				}
+			}
+			if($view_top && (array_key_exists(($i + 1), $karmastars) || ($i + 1 == count($karmastars))))
+			{
+				if($i + 1 == count($karmastars))
+				{
+					$last_karma = true;
+				}
+				else
+				{
+					$next_karma = $karmastars[($i + 1)];
+				}
+				$karma_top_users = array();
+				foreach($users as $u => $user)
+				{
+					if($last_karma || $next_karma['karmastar_posts'] > $user['postnum'])
+					{
+						$formatted_name = format_name($user['username'], $user['usergroup'], $user['displaygroup']).' ('.$user['postnum'].')';
+						$profile_link = build_profile_link($formatted_name, $user['uid'], '_blank');
+						$karma_top_users[] = $profile_link;
+						unset($users[$u]);
+					}
+				}
+				$karma_top_users = '<br />'.implode(', ', $karma_top_users);
 			}
 			if($earned_karma)
 			{
 				eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row')."\";");
 			}
-			if($next_karma)
+			if($next_user_karma)
 			{
-				$posts_left = $next_karma['karmastar_posts'] - $postnum;
+				$posts_left = $next_user_karma['karmastar_posts'] - $postnum;
 				if(!$earned_karma)
 				{
-					$posts_difference = $next_karma['karmastar_posts'];
+					$posts_difference = $next_user_karma['karmastar_posts'];
 					$posts_done = $postnum;
 				}
 				else
 				{
-					$posts_difference = $next_karma['karmastar_posts'] - $karmastar['karmastar_posts'];
+					$posts_difference = $next_user_karma['karmastar_posts'] - $karmastar['karmastar_posts'];
 					$posts_done = $postnum - $karmastar['karmastar_posts'];
 				}
 				$percentage_done = round(($posts_done / $posts_difference) * 100);
@@ -451,6 +496,17 @@ function karmastars_list()
 			{
 				eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row')."\";");
 			}
+		}
+
+		if($view_top)
+		{
+			$view_top_link = 'misc.php?action=karmastars';
+			$view_top_text = $lang->karmastars_hide_top;
+		}
+		else
+		{
+			$view_top_link = 'misc.php?action=karmastars&amp;viewtop=1';
+			$view_top_text = $lang->karmastars_view_top;
 		}
 
 		add_breadcrumb($lang->karmastars);
