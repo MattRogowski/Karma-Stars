@@ -209,7 +209,7 @@ function karmastars_activate()
 	$templates = array();
 	$templates[] = array(
 		"title" => "karmastars_postbit",
-		"template" => "<a href=\"{\$mybb->settings['bburl']}/misc.php?action=karmastars\" target=\"_blank\"><img src=\"{\$mybb->settings['bburl']}/{\$karmastar['karmastar_image']}\" alt=\"{\$karmastar['karmastar_name']}\" title=\"{\$karmastar['karmastar_name']}\" /></a>"
+		"template" => "<a href=\"{\$mybb->settings['bburl']}/misc.php?action=karmastars&amp;uid={\$post['uid']}\" target=\"_blank\"><img src=\"{\$mybb->settings['bburl']}/{\$karmastar['karmastar_image']}\" alt=\"{\$karmastar['karmastar_name']}\" title=\"{\$karmastar['karmastar_name']}\" /></a>"
 	);
 	$templates[] = array(
 		"title" => "karmastars_list",
@@ -223,7 +223,8 @@ function karmastars_activate()
 <table border=\"0\" cellspacing=\"{\$theme['borderwidth']}\" cellpadding=\"{\$theme['tablespace']}\" class=\"tborder\">
 	<tr>
 		<td class=\"thead\" colspan=\"3\">
-			<strong>{\$lang->karmastars}</strong>
+			<strong>{\$table_title}</strong>
+			<div class=\"float_right\">{\$view_own}</div>
 		</td>
 	</tr>
 	<tr>
@@ -370,6 +371,26 @@ function karmastars_list()
 	{
 		$lang->load('karmastars');
 
+		$uid = 0;
+		$view_own = '';
+		if($mybb->input['uid'])
+		{
+			$user = get_user($mybb->input['uid']);
+			if($user && $user['uid'] != $mybb->user['uid'])
+			{
+				$uid = $user['uid'];
+				$postnum = $user['postnum'];
+				$table_title = $lang->sprintf($lang->karmastars_user, $user['username']);
+				$view_own = '<a href="misc.php?action=karmastars">'.$lang->karmastars_view_own.'</a>';
+			}
+		}
+		if(!$uid)
+		{
+			$uid = $mybb->user['uid'];
+			$postnum = $mybb->user['postnum'];
+			$table_title = $lang->karmastars;
+		}
+
 		$karmastars = $cache->read('karmastars');
 		foreach($karmastars as $i => $karmastar)
 		{
@@ -377,9 +398,9 @@ function karmastars_list()
 			$selected = '';
 			$next_karma = false;
 			$earned_karma = false;
-			if($mybb->user['uid'])
+			if($uid)
 			{
-				$user_karmastar = karmastars_get_karma($mybb->user['postnum']);
+				$user_karmastar = karmastars_get_karma($postnum);
 				if($user_karmastar)
 				{
 					if($user_karmastar['karmastar_id'] == $karmastar['karmastar_id'])
@@ -403,16 +424,16 @@ function karmastars_list()
 			}
 			if($next_karma)
 			{
-				$posts_left = $next_karma['karmastar_posts'] - $mybb->user['postnum'];
+				$posts_left = $next_karma['karmastar_posts'] - $postnum;
 				if(!$earned_karma)
 				{
 					$posts_difference = $next_karma['karmastar_posts'];
-					$posts_done = $mybb->user['postnum'];
+					$posts_done = $postnum;
 				}
 				else
 				{
 					$posts_difference = $next_karma['karmastar_posts'] - $karmastar['karmastar_posts'];
-					$posts_done = $mybb->user['postnum'] - $karmastar['karmastar_posts'];
+					$posts_done = $postnum - $karmastar['karmastar_posts'];
 				}
 				$percentage_done = round(($posts_done / $posts_difference) * 100);
 				$percentage_left = $lang->sprintf($lang->karmastars_next_level, $posts_left);
