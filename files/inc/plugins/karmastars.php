@@ -32,6 +32,14 @@ $plugins->add_hook("admin_user_menu", "karmastars_admin_user_menu");
 $plugins->add_hook("admin_user_action_handler", "karmastars_admin_user_action_handler");
 $plugins->add_hook("admin_user_permissions", "karmastars_admin_user_permissions");
 
+global $templatelist;
+
+if($templatelist)
+{
+	$templatelist .= ',';
+}
+$templatelist .= 'karmastars_postbit,karmastars_list,karmastars_list_row,karmastars_list_row_percentage';
+
 function karmastars_info()
 {
 	return array(
