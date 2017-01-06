@@ -489,7 +489,7 @@ function karmastars_list()
 					$posts_done = $postnum - $karmastar['karmastar_posts'];
 				}
 				$percentage_done = round(($posts_done / $posts_difference) * 100);
-				$percentage_left = $lang->sprintf($lang->karmastars_next_level, $posts_left);
+				$percentage_left = $lang->sprintf($lang->karmastars_next_level, $postnum, $posts_left);
 				eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row_percentage')."\";");
 			}
 			if(!$earned_karma)
