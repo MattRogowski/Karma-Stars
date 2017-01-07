@@ -167,6 +167,11 @@ function karmastars_install()
 				'name' => 'One Large Blue Star'
 			),
 			array(
+				'image' => 'images/karmastars/1_large_orange.gif',
+				'posts' => '35000',
+				'name' => 'One Large Orange Star'
+			),
+			array(
 				'image' => 'images/karmastars/1_large_flashing.gif',
 				'posts' => '40000',
 				'name' => 'One Large Flashing Star'
