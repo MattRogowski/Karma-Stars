@@ -181,7 +181,7 @@ function karmastars_install()
 			);
 			$db->insert_query('karmastars', $insert);
 		}
-		karmastars_cache();
+		update_karmastars();
 	}
 }
 
@@ -329,7 +329,7 @@ function karmastars_deactivate()
 	$db->delete_query("templates", "title IN ('karmastars_user_star','karmastars_list','karmastars_list_row','karmastars_list_row_percentage')");
 }
 
-function karmastars_cache()
+function update_karmastars()
 {
 	global $db, $cache;
 
