@@ -139,7 +139,7 @@ function karmastars_install()
 			array(
 				'image' => 'images/karmastars/1_large_silver_sparkling.gif',
 				'posts' => '12500',
-				'name' => 'One Large Silver Sparkling Star'
+				'name' => 'One Large Sparkling Silver Star'
 			),
 			array(
 				'image' => 'images/karmastars/1_large_gold.gif',
@@ -149,17 +149,17 @@ function karmastars_install()
 			array(
 				'image' => 'images/karmastars/1_large_gold_sparkling.gif',
 				'posts' => '17500',
-				'name' => 'One Large Gold Sparkling Star'
+				'name' => 'One Large Sparkling Gold Star'
 			),
 			array(
-				'image' => 'images/karmastars/1_large_platinum_spinning.gif',
+				'image' => 'images/karmastars/1_large_spinning.gif',
 				'posts' => '20000',
-				'name' => 'One Large Platinum Spinning Star'
+				'name' => 'One Large Spinning Star'
 			),
 			array(
-				'image' => 'images/karmastars/1_large_platinum_spinning.gif',
+				'image' => 'images/karmastars/1_large_platinum.gif',
 				'posts' => '25000',
-				'name' => 'Two Large Platinum Spinning Stars'
+				'name' => 'One Large Platinum Star'
 			),
 			array(
 				'image' => 'images/karmastars/1_large_blue.gif',
@@ -169,7 +169,7 @@ function karmastars_install()
 			array(
 				'image' => 'images/karmastars/1_large_flashing.gif',
 				'posts' => '40000',
-				'name' => 'One Large Flashing Rainbow Star'
+				'name' => 'One Large Flashing Star'
 			)
 		);
 		foreach($karmastars as $karmastar)
