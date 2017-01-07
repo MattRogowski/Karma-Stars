@@ -38,7 +38,7 @@ if($templatelist)
 {
 	$templatelist .= ',';
 }
-$templatelist .= 'karmastars_postbit,karmastars_list,karmastars_list_row,karmastars_list_row_percentage';
+$templatelist .= 'karmastars_user_star,karmastars_list,karmastars_list_row,karmastars_list_row_percentage';
 
 function karmastars_info()
 {
@@ -226,8 +226,8 @@ function karmastars_activate()
 
 	$templates = array();
 	$templates[] = array(
-		"title" => "karmastars_postbit",
-		"template" => "<a href=\"{\$mybb->settings['bburl']}/misc.php?action=karmastars&amp;uid={\$post['uid']}\" target=\"_blank\"><img src=\"{\$mybb->settings['bburl']}/{\$karmastar['karmastar_image']}\" alt=\"{\$karmastar['karmastar_name']}\" title=\"{\$karmastar['karmastar_name']}\" /></a>"
+		"title" => "karmastars_user_star",
+		"template" => "<a href=\"{\$mybb->settings['bburl']}/misc.php?action=karmastars&amp;uid={\$karmastar_uid}\" target=\"_blank\"><img src=\"{\$mybb->settings['bburl']}/{\$karmastar['karmastar_image']}\" alt=\"{\$karmastar['karmastar_name']}\" title=\"{\$karmastar['karmastar_name']}\" /></a>"
 	);
 	$templates[] = array(
 		"title" => "karmastars_list",
@@ -326,7 +326,7 @@ function karmastars_deactivate()
 		find_replace_templatesets("footer", "#".preg_quote("\n\t\t\t\t".'<li><a href="{$mybb->settings[\'bburl\']}/misc.php?action=karmastars">{$lang->karmastars}</a></li>')."#i", '', 0);
 	}
 
-	$db->delete_query("templates", "title IN ('karmastars_postbit','karmastars_list','karmastars_list_row','karmastars_list_row_percentage')");
+	$db->delete_query("templates", "title IN ('karmastars_user_star','karmastars_list','karmastars_list_row','karmastars_list_row_percentage')");
 }
 
 function karmastars_cache()
@@ -370,7 +370,8 @@ function karmastars_postbit(&$post)
 	$karmastar = karmastars_get_karma($post['postnum']);
 	if($karmastar)
 	{
-		eval("\$post['karmastar'] = \"".$templates->get('karmastars_postbit')."\";");
+		$karmastar_uid = $post['uid'];
+		eval("\$post['karmastar'] = \"".$templates->get('karmastars_user_star')."\";");
 	}
 }
 
@@ -382,7 +383,8 @@ function karmastars_profile()
 	$karmastar = karmastars_get_karma($memprofile['postnum']);
 	if($karmastar)
 	{
-		eval("\$memprofile['karmastar'] = \"".$templates->get('karmastars_postbit')."\";");
+		$karmastar_uid = $memprofile['uid'];
+		eval("\$memprofile['karmastar'] = \"".$templates->get('karmastars_user_star')."\";");
 	}
 }
 
