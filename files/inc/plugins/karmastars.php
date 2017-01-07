@@ -274,7 +274,7 @@ function karmastars_activate()
 		<img src=\"{\$mybb->settings['bburl']}/{\$karmastar['karmastar_image']}\" alt=\"{\$karmastar['karmastar_name']}\" title=\"{\$karmastar['karmastar_name']}\" />
 	</td>
 	<td class=\"{\$trow}\" align=\"center\">
-		{\$karmastar['karmastar_posts']}
+		{\$karmastar_posts}{\$karmastar_diff}
 	</td>
 	<td class=\"{\$trow}\">
 		{\$karmastar['karmastar_name']}{\$karma_top_users}
@@ -433,13 +433,14 @@ function karmastars_list()
 		}
 
 		$karmastars = $cache->read('karmastars');
+		$prev_karma = null;
 		foreach($karmastars as $i => $karmastar)
 		{
 			$trow = alt_trow();
 			$selected = '';
 			$next_user_karma = $next_karma = null;
 			$earned_karma = $last_karma = false;
-			$karma_top_users = '';
+			$karma_top_users = $karmastar_diff = '';
 			if($uid)
 			{
 				$user_karmastar = karmastars_get_karma($postnum);
@@ -475,7 +476,7 @@ function karmastars_list()
 				{
 					if($last_karma || $next_karma['karmastar_posts'] > $user['postnum'])
 					{
-						$formatted_name = format_name($user['username'], $user['usergroup'], $user['displaygroup']).' ('.$user['postnum'].')';
+						$formatted_name = format_name($user['username'], $user['usergroup'], $user['displaygroup']).' ('.number_format($user['postnum']).')';
 						$profile_link = build_profile_link($formatted_name, $user['uid'], '_blank');
 						$karma_top_users[] = $profile_link;
 						unset($users[$u]);
@@ -483,6 +484,11 @@ function karmastars_list()
 				}
 				$karma_top_users = '<br />'.implode(', ', $karma_top_users);
 			}
+			if($prev_karma)
+			{
+				$karmastar_diff = ' <small><em>(+'.number_format($karmastar['karmastar_posts']-$prev_karma['karmastar_posts']).')</em></small>';
+			}
+			$karmastar_posts = number_format($karmastar['karmastar_posts']);
 			if($earned_karma)
 			{
 				eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row')."\";");
@@ -501,13 +507,14 @@ function karmastars_list()
 					$posts_done = $postnum - $karmastar['karmastar_posts'];
 				}
 				$percentage_done = round(($posts_done / $posts_difference) * 100);
-				$percentage_left = $lang->sprintf($lang->karmastars_next_level, $postnum, $posts_left);
+				$percentage_left = $lang->sprintf($lang->karmastars_next_level, number_format($postnum), number_format($posts_left));
 				eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row_percentage')."\";");
 			}
 			if(!$earned_karma)
 			{
 				eval("\$karmastars_list .= \"".$templates->get('karmastars_list_row')."\";");
 			}
+			$prev_karma = $karmastar;
 		}
 
 		if($view_top)
