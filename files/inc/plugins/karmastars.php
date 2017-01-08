@@ -1,8 +1,8 @@
 <?php
 /**
- * Karma Stars 1.1.1
+ * Karma Stars 1.2.0
 
- * Copyright 2016 Matthew Rogowski
+ * Copyright 2017 Matthew Rogowski
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ function karmastars_info()
 		"website" => "https://github.com/MattRogowski/Karma-Stars",
 		"author" => "Matt Rogowski",
 		"authorsite" => "https://matt.rogow.ski",
-		"version" => "1.1.1",
+		"version" => "1.2.0",
 		"compatibility" => "16*,18*",
 		"codename" => "karmastars"
 	);

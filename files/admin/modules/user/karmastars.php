@@ -1,8 +1,8 @@
 <?php
 /**
- * Karma Stars 1.1.0 - Admin File
+ * Karma Stars 1.2.0 - Admin File
 
- * Copyright 2016 Matthew Rogowski
+ * Copyright 2017 Matthew Rogowski
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ if($mybb->request_method == 'post' && !isset($_POST['karmastar_rows_submit']))
 			);
 		}
 	}
-	
+
 	if($errors_count > 0)
 	{
 		//echo '<pre>';print_r($errors);echo '</pre>';
